@@ -1,6 +1,6 @@
 'use strict';
 const { Model, DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
+
 
 module.exports = (sequelize) => {
     class Courses extends Model { }
@@ -8,42 +8,25 @@ module.exports = (sequelize) => {
         title: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                notNull: {
-                    msg: 'A name is required'
-                },
-                notEmpty: {
-                    msg: 'Please provide a name'
-                }
-            }
         },
         description: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                notNull: {
-                    msg: ''
-                },
-                notEmpty: {
-                    msg: ''
-                }
-            }
         },
+        estimatedTime: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+
         materialsNeeded: {
             type: DataTypes.STRING,
             allowNull: false
             },
-            validate: {
-                notNull: {
-                    msg: ''
-                }
-            }
-        }
     }, { sequelize });
 
     return Courses;
 };
 
-
-//Users.hasMany(Courses)
-//Courses.belongsTo(Users);
+// Course.belongsTo(User, {
+//     through: User,
+// });
