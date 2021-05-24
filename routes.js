@@ -73,7 +73,7 @@ router.post('/users', asyncHandler(async (req, res) => {
 
 // /api/courses GET route that will return a list of all courses including the User that owns each course and a 200 HTTP status code.
 
-// /* GET book listing. */
+// /* GET courses listing. */
 router.get('/users', asyncHandler(async (req, res) => {
     const dataUser = await User.findAll();
     res.render("index", { book: dataUser, title: "My Awesome User" });
@@ -105,7 +105,7 @@ router.get("/users/:id", asyncHandler(async (req, res, next) => {
 
 // /api/courses POST route that will create a new course, set the Location header to the URI for the newly created course, and return a 201 HTTP status code and no content.
 
-// // // /* POST create book. */
+// // // /* POST create new course. */
 router.post('/users/new', asyncHandler(async (req, res) => {
     let book;
     try {
@@ -126,7 +126,7 @@ router.post('/users/new', asyncHandler(async (req, res) => {
 
 // /api/courses /: id PUT route that will update the corresponding course and return a 204 HTTP status code and no content.
 
-// // /* PUT update user. */
+// // /* PUT update course. */
 router.put("/:id", function (req, res, next) {
   User.findById(req.params.id).then(function (user) {
     if (user) {
@@ -153,7 +153,7 @@ router.put("/:id", function (req, res, next) {
 
 // /api/courses/:id DELETE route that will delete the corresponding course and return a 204 HTTP status code and no content.
 
-// // /* DELETE individual book. */
+// // /* DELETE individual course. */
 router.post("/users/:id/delete", asyncHandler(async (req, res) => {
     try {
         const bookDeleteIndividual = await User.findByPk(req.params.id);
