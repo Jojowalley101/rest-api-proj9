@@ -1,5 +1,7 @@
 'use strict';
 
+const Courses = require('./models').Courses;
+
 // async handler
 function asyncHandler(cb) {
     return async (req, res, next) => {
@@ -23,8 +25,8 @@ function asyncHandler(cb) {
  */
 
 const express = require('express');
-const { asyncHandler } = require('./middleware/async-handler');
-const { User } = require('./models');
+// const { asyncHandler } = require('./middleware/async-handler');
+const Users  = require('./models').Users;
 const { authenticateUser } = require('./middleware/auth-user');
 
 // Construct a router instance.
@@ -32,13 +34,14 @@ const router = express.Router();
 
 // /api/users GET route that will return the currently authenticated user along with a 200 HTTP status code.
 
-// Route that returns a list of users.
-router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
+// Route that returns one user.
+router.get('/users', asyncHandler(async (req, res) => {
     const user = req.currentUser;
 
     res.json({
-        name: user.name,
-        username: user.username
+        firstName: user.firstName,
+        lastName: user.lastName,
+        emailAddress: user.emailAddress
     });
 }));
 
@@ -74,19 +77,20 @@ router.post('/users', asyncHandler(async (req, res) => {
 // /api/courses GET route that will return a list of all courses including the User that owns each course and a 200 HTTP status code.
 
 // /* GET courses listing. */
-router.get('/users', asyncHandler(async (req, res) => {
-    const dataUser = await User.findAll();
-    res.render("index", { book: dataUser, title: "My Awesome User" });
+router.get('/courses', asyncHandler(async (req, res) => {
+    const dataCourses = await Courses.findAll();
+    res.json(dataCourses);
+    //res.render("index", { book: dataCourses, title: "My Awesome Courses" });
 }));
 
 
 // /api/courses /: id GET route that will return the corresponding course along with the User that owns that course and a 200 HTTP status code.
 
-router.get("/users/:id", asyncHandler(async (req, res, next) => {
+router.get("/courses/:id", asyncHandler(async (req, res, next) => {
     try {
-        const usersingleID = await User.findOne({ where: { id: req.params.id } });
+        const usersingleID = await Courses.findOne({ where: { id: req.params.id } });
         //console.log(req.params.id);
-        res.render("update", { book: usersingleID, title: usersingleID.title });
+        //res.render("update", { book: usersingleID, title: usersingleID.title });
     } catch (error) {
         if (error.status === 404) {
             const errorNotFound = new Error('Error, page not found');
@@ -109,13 +113,13 @@ router.get("/users/:id", asyncHandler(async (req, res, next) => {
 router.post('/users/new', asyncHandler(async (req, res) => {
     let book;
     try {
-        book = await User.create(req.body);
-        res.redirect("/users");
+        book = await Courses.create(req.body);
+        ///res.redirect("/users");
     }
     catch (error) {
         if (error.name === "SequelizeValidationError") {
-            book = await User.build(req.body);
-            res.render("new", { book: book, errors: error.errors, title: "New User" });
+            book = await Courses.build(req.body);
+            //res.render("new", { book: book, errors: error.errors, title: "New Courses" });
         } else {
             throw error;
         }
@@ -128,19 +132,19 @@ router.post('/users/new', asyncHandler(async (req, res) => {
 
 // // /* PUT update course. */
 router.put("/:id", function (req, res, next) {
-  User.findById(req.params.id).then(function (user) {
+  Courses.findById(req.params.id).then(function (user) {
     if (user) {
       return user.update(req.body);
     } else {
       res.send(404);
     }
   }).then(function (user) {
-    res.redirect("/users/" + user.id);
+      res.redirect("/courses/" + user.id);
   }).catch(function (error) {
     if (error.name === "SequelizeValidationError") {
-      var user = User.build(req.body);
+      var user = Courses.build(req.body);
       user.id = req.params.id;
-      res.render("users/edit", { user: user, errors: error.errors, title: "Edit user" })
+        //res.render("courses/edit", { user: user, errors: error.errors, title: "Edit courses" })
     } else {
       throw error;
     }
@@ -154,11 +158,11 @@ router.put("/:id", function (req, res, next) {
 // /api/courses/:id DELETE route that will delete the corresponding course and return a 204 HTTP status code and no content.
 
 // // /* DELETE individual course. */
-router.post("/users/:id/delete", asyncHandler(async (req, res) => {
+router.post("/courses/:id/delete", asyncHandler(async (req, res) => {
     try {
-        const bookDeleteIndividual = await User.findByPk(req.params.id);
+        const bookDeleteIndividual = await Courses.findByPk(req.params.id);
         await bookDeleteIndividual.destroy();
-        res.redirect("/users");
+        res.redirect("/courses");
         //console.log(req.params.id);
         //res.render("edit", { book: bookDeleteIndividual, title: bookDeleteIndividual.title });
     } catch (error) {

@@ -4,7 +4,7 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
     class Users extends Model { }
     Users.init({
-        name: {
+        firstName: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
                 }
             }
         },
-        username: {
+        lastName: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: {
@@ -31,8 +31,17 @@ module.exports = (sequelize) => {
                 }
             }
         },
+        emailAddress: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notNull: {
+                    msg: 'Both passwords must match'
+                }
+            }
+        },
         password: {
-            type: DataTypes.VIRTUAL,
+            type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notNull: {
@@ -47,28 +56,10 @@ module.exports = (sequelize) => {
                 }
             }
         },
-        confirmedPassword: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            set(val) {
-                if (val === this.password) {
-                    const hashedPassword = bcrypt.hashSync(val, 10);
-                    this.setDataValue('confirmedPassword', hashedPassword);
-                }
-            },
-            validate: {
-                notNull: {
-                    msg: 'Both passwords must match'
-                }
-            }
-        }
     }, { sequelize });
     Users.associate = (models) => {
         Users.hasMany(models.Courses, {
-            as: 'database',
-            foreignKey: {
-                allowNull: false,
-            },
+            foreignKey: "userId"
         });
     };
 

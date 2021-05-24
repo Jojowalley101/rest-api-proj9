@@ -15,21 +15,18 @@ module.exports = (sequelize) => {
         },
         estimatedTime: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
 
         materialsNeeded: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true,
             },
     }, { sequelize });
 
     Courses.associate = (models) => {
         Courses.belongsTo(models.Users, {
-            as: 'database',
-            foreignKey: {
-                allowNull: false,
-            },
+            foreignKey: "userId"
         });
     };
 

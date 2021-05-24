@@ -3,8 +3,9 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
-const Sequelize  = require('./models');
-const sequelize = require('sequelize');
+const sequelize  = require('./models').sequelize;
+const routes = require('./routes');
+//const sequelize = require('sequelize');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -28,6 +29,11 @@ app.use((req, res) => {
     message: 'Route Not Found',
   });
 });
+
+
+//makes sure api is in json and that it goes to the correct routes
+app.use('/api', routes);
+app.use(express.json());
 
 // setup a global error handler
 app.use((err, req, res, next) => {
