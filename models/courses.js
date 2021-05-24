@@ -24,6 +24,15 @@ module.exports = (sequelize) => {
             },
     }, { sequelize });
 
+    Courses.associate = (models) => {
+        Courses.belongsTo(models.Users, {
+            as: 'database',
+            foreignKey: {
+                allowNull: false,
+            },
+        });
+    };
+
     return Courses;
 };
 

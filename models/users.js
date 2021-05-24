@@ -63,6 +63,18 @@ module.exports = (sequelize) => {
             }
         }
     }, { sequelize });
+    Users.associate = (models) => {
+        Users.hasMany(models.Courses, {
+            as: 'database',
+            foreignKey: {
+                allowNull: false,
+            },
+        });
+    };
 
     return Users;
 };
+
+
+///In the Users model, add a one-to-many association between 
+//the User and Course models using the hasMany() method.
