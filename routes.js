@@ -7,9 +7,12 @@ const bcrypt = require('bcryptjs');
 // async handler
 function asyncHandler(cb) {
     return async (req, res, next) => {
-        await cb(req, res, next)
-        res.status(500).send(error);
+        try {
+            await cb(req, res, next)
+        } catch (error) {
+            next(error);
     }
+}
 }
 
 /**
@@ -93,7 +96,7 @@ router.get('/courses', asyncHandler(async (req, res) => {
 
 // /api/courses /: id GET route that will return the corresponding course along with the User that owns that course and a 200 HTTP status code.
 
-router.get("/courses/:id", authenticateUser, asyncHandler(async (req, res, next) => {
+router.get("/courses/:id", asyncHandler(async (req, res, next) => {
 
         const usersingleID = await Courses.findByPk(req.params.id, {
             include: {
