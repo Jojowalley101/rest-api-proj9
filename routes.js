@@ -49,11 +49,14 @@ router.get('/users', asyncHandler(async (req, res) => {
 // /api/users POST route that will create a new user, set the Location header to "/", and return a 201 HTTP status code and no content.
 // Route that creates a new user.
 router.post('/users', asyncHandler(async (req, res) => {
+    let user;
+    console.log(req.body);
     try {
-        const salt = bcrypt.genSaltSync(10);
-        const body = req.body;
-        body.password = bcrypt.hashSync(req.body.password, salt);
-        await User.create(req.body);
+        // const salt = bcrypt.genSaltSync(10);
+        // const body = req.body;
+        // body.password = bcrypt.hashSync(req.body.password, salt);
+        user = await Users.create(req.body);
+        //console.log(req.body);
 
         res.location('/').status(201).end();
         //res.status(201).json({ "message": "Account successfully created!" });
