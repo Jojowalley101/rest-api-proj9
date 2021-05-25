@@ -7,13 +7,8 @@ const bcrypt = require('bcryptjs');
 // async handler
 function asyncHandler(cb) {
     return async (req, res, next) => {
-        try {
-            await cb(req, res, next)
-
-        } catch (error) {
-            res.status(500).send(error);
-
-        }
+        await cb(req, res, next)
+        res.status(500).send(error);
     }
 }
 
@@ -159,7 +154,7 @@ router.put("/courses/:id", authenticateUser, asyncHandler(async (req, res) => {
             const course = await Courses.update(req.body);
             res.status(204).end();
         } catch (error) {
-            if (error.name === 'SequelizeValisationError') {
+            if (error.name === 'SequelizeValidationError') {
                 const errors = error.errors.map(err => err.message);
                 res.status(400).json({ errors });
             } else {
