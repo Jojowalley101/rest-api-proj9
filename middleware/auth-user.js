@@ -1,8 +1,8 @@
 'use strict';
 
 const auth = require('basic-auth');
-const Users = require('../models');
-//const { Courses } = require('../models').Courses;
+const { Users } = require('../models')
+const { Courses } = require('../models');
 const bcrypt = require('bcryptjs');
 //const routes = require('../routes');
 
@@ -19,20 +19,19 @@ exports.authenticateUser = async (req, res, next) => {
     const credentials = auth(req);
 
     if (credentials) {
-        const user = await Users.findOne(u => u.firstName === credentials.name);
+        const user = await Users.findOne({ where: { emailAddress: credentials.name } });
         if (user) {
-            const authenticated = bcrypt
-                .compareSync(credentials.pass, user.password);
+            const authenticated = bcrypt.compareSync(credentials.pass, user.password);
             if (authenticated) {
-                console.log(`Authentication successful for email: ${user.emailAddress}`);
+                console.log(`Authentication successful for email: ${user.name}`);
 
                 // Store the user on the Request object.
                 req.currentUser = user;
             } else {
-                message = `Authentication failure for email: ${user.emailAddress}`;
+                message = `Authentication failure for email: ${user.name}`;
             }
         } else {
-            message = `User not found for email: ${credentials.emailAddress}`;
+            message = `User not found for email: ${credentials.name}`;
         }
     } else {
         message = 'Auth header not found';
