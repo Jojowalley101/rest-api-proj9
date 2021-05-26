@@ -28,8 +28,9 @@ app.get('/', (req, res) => {
 
 
 //makes sure api is in json and that it goes to the correct routes
-app.use('/api', routes);
 app.use(express.json());
+app.use('/api', routes);
+//app.use(express.json());
 
 
 // set our port

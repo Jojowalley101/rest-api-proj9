@@ -1,9 +1,11 @@
 'use strict';
 
 const auth = require('basic-auth');
-const { Users } = require('../models');
-const Courses = require('../models/courses');
+const { Users } = require('../models').Users;
+//const { Courses } = require('../models').Courses;
 const bcrypt = require('bcryptjs');
+//const routes = require('../routes');
+
 
 /**
  * Middleware to authenticate the request using Basic Authentication.
@@ -17,7 +19,7 @@ exports.authenticateUser = async (req, res, next) => {
     const credentials = auth(req);
 
     if (credentials) {
-        const user = await Users.findOne({ where: { emailAddress: credentials.emailAddress } });
+        const user = await Users.find(u => u.firstName === credentials.name);
         if (user) {
             const authenticated = bcrypt
                 .compareSync(credentials.pass, user.password);

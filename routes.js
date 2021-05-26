@@ -2,18 +2,24 @@
 
 const Courses = require('./models').Courses;
 const bcrypt = require('bcryptjs');
+const express = require('express');
+const { asyncHandler } = require('./middleware/async-handler');
+const Users = require('./models').Users;
+const { authenticateUser } = require('./middleware/auth-user');
 
+// Construct a router instance.
+const router = express.Router();
 
 // async handler
-function asyncHandler(cb) {
-    return async (req, res, next) => {
-        try {
-            await cb(req, res, next)
-        } catch (error) {
-            next(error);
-    }
-}
-}
+// function asyncHandler(cb) {
+//     return async (req, res, next) => {
+//         try {
+//             await cb(req, res, next);
+//         } catch (error) {
+//             next(error);
+//     }
+// }
+// }
 
 /**
  * Create the User Routes
@@ -24,19 +30,20 @@ function asyncHandler(cb) {
  * and return a 201 HTTP status code and no content.
  */
 
-const express = require('express');
-// const { asyncHandler } = require('./middleware/async-handler');
-const Users  = require('./models').Users;
-const { authenticateUser } = require('./middleware/auth-user');
+// const express = require('express');
+// // const { asyncHandler } = require('./middleware/async-handler');
+// const Users  = require('./models').Users;
+// const { authenticateUser } = require('./middleware/auth-user');
 
-// Construct a router instance.
-const router = express.Router();
+// // Construct a router instance.
+// const router = express.Router();
 
 // /api/users GET route that will return the currently authenticated user along with a 200 HTTP status code.
 
 // Route that returns one user.
-router.get('/users', asyncHandler(async (req, res) => {
+router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
     const user = req.currentUser;
+    console.log(user);
 
     res.status(200).json({
         firstName: user.firstName,
@@ -49,15 +56,17 @@ router.get('/users', asyncHandler(async (req, res) => {
 // /api/users POST route that will create a new user, set the Location header to "/", and return a 201 HTTP status code and no content.
 // Route that creates a new user.
 router.post('/users', asyncHandler(async (req, res) => {
+    // const user = req.body;
     let user;
-    console.log(req.body);
+    //console.log(res.body);
     try {
         // const salt = bcrypt.genSaltSync(10);
-        // const body = req.body;
+        //const body = req.body;
         // body.password = bcrypt.hashSync(req.body.password, salt);
         user = await Users.create(req.body);
         //console.log(req.body);
-
+        
+        
         res.location('/').status(201).end();
         //res.status(201).json({ "message": "Account successfully created!" });
     } catch (error) {
@@ -180,7 +189,7 @@ router.put("/courses/:id", authenticateUser, asyncHandler(async (req, res) => {
 // /api/courses/:id DELETE route that will delete the corresponding course and return a 204 HTTP status code and no content.
 
 // // /* DELETE individual course. */
-router.post("/courses/:id/delete", authenticateUser, asyncHandler(async (req, res) => {
+router.delete("/courses/:id/delete", authenticateUser, asyncHandler(async (req, res) => {
 
         const courseDeleteIndividual = await Courses.findByPk(req.params.id);
         if (req.currentUser.id !== course.id) {

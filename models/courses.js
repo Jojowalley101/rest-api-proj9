@@ -33,7 +33,6 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: true,
         },
-
         materialsNeeded: {
             type: DataTypes.STRING,
             allowNull: true,
