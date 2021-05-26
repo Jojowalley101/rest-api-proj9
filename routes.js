@@ -93,6 +93,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     try {
         course = await Courses.create(req.body);
         res.location(`/courses/${course.id}`).status(201).end();
+       
     }
     catch (error) {
         if (error.name === "SequelizeValidationError") {
@@ -111,7 +112,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
 router.put("/courses/:id", authenticateUser, asyncHandler(async (req, res) => {
 
     const courseFinderUpdate = await Courses.findByPk(req.params.id, {
-        include: {
+        where: {
             model: Users,
             attributes: ['firstName', 'lastName']
         }
