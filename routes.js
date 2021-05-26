@@ -92,12 +92,13 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     let course;
     try {
         course = await Courses.create(req.body);
-        res.location(`/courses/${course.id}`).status(201).end();
+        res.status(201).location(`/courses/${course.id}`).end();
        
     }
     catch (error) {
         if (error.name === "SequelizeValidationError") {
-            course = await Courses.build(req.body);
+            const errors = error.errors.map(err => err.message);
+            res.status(400).json({ errors });
         } else {
             throw error;
         }
@@ -111,18 +112,17 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
 // // /* PUT update course. */
 router.put("/courses/:id", authenticateUser, asyncHandler(async (req, res) => {
 
-    const courseFinderUpdate = await Courses.findByPk(req.params.id, {
-        where: {
-            model: Users,
-            attributes: ['firstName', 'lastName']
-        }
-    });
-
-    if (req.currentUser.id !== courseFinderUpdate.id) {
+    const courseFinderUpdate = await Courses.findByPk(req.params.id);
+        // { where: {
+        //     model: Users,
+        //     attributes: ['firstName', 'lastName']
+        // }
+    if (req.currentUser.id !== courseFinderUpdate.userId) {
         res.status(403).end();
     } else {
         try {
-            await Courses.update(req.body);
+            //if (req.currentUser.id )
+            await Courses.update(req.body, {where: {id: req.params.id}});
             res.status(204).end();
         } catch (error) {
             if (error.name === 'SequelizeValidationError') {
