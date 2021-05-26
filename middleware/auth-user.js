@@ -1,7 +1,7 @@
 'use strict';
 
 const auth = require('basic-auth');
-const { Users } = require('../models').Users;
+const Users = require('../models');
 //const { Courses } = require('../models').Courses;
 const bcrypt = require('bcryptjs');
 //const routes = require('../routes');
@@ -19,7 +19,7 @@ exports.authenticateUser = async (req, res, next) => {
     const credentials = auth(req);
 
     if (credentials) {
-        const user = await Users.find(u => u.firstName === credentials.name);
+        const user = await Users.findOne(u => u.firstName === credentials.name);
         if (user) {
             const authenticated = bcrypt
                 .compareSync(credentials.pass, user.password);

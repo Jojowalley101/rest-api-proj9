@@ -3,10 +3,13 @@
 // load modules
 const express = require('express');
 const morgan = require('morgan');
-const sequelize  = require('./models').sequelize;
+const sequelize  = require('./models');
 const routes = require('./routes');
-const Users = require('./models').Users;
-const Courses = require('./models').Courses;
+const Users = require('./models');
+const Courses = require('./models');
+const asyncHandler = require('./middleware/async-handler');
+const auth = require('./middleware/auth-user');
+
 
 //const sequelize = require('sequelize');
 

@@ -1,25 +1,25 @@
 'use strict';
 
-const Courses = require('./models').Courses;
+const Courses = require('./models');
 const bcrypt = require('bcryptjs');
 const express = require('express');
-const { asyncHandler } = require('./middleware/async-handler');
-const Users = require('./models').Users;
-const { authenticateUser } = require('./middleware/auth-user');
+//const asyncHandler = require('./middleware/async-handler');
+const Users = require('./models');
+const authenticateUser = require('./middleware/auth-user');
 
 // Construct a router instance.
 const router = express.Router();
 
 // async handler
-// function asyncHandler(cb) {
-//     return async (req, res, next) => {
-//         try {
-//             await cb(req, res, next);
-//         } catch (error) {
-//             next(error);
-//     }
-// }
-// }
+function asyncHandler(cb) {
+    return async (req, res, next) => {
+        try {
+            await cb(req, res, next);
+        } catch (error) {
+            next(error);
+    }
+}
+}
 
 /**
  * Create the User Routes
