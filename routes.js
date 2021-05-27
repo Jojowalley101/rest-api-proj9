@@ -117,12 +117,12 @@ router.put("/courses/:id", authenticateUser, asyncHandler(async (req, res) => {
         //     model: Users,
         //     attributes: ['firstName', 'lastName']
         // }
-    if (req.currentUser.id !== courseFinderUpdate.userId) {
+    if (req.currentUser.id != courseFinderUpdate.userId) {
         res.status(403).end();
     } else {
         try {
             //if (req.currentUser.id )
-            await Courses.update(req.body, {where: {id: req.params.id}});
+            await courseFinderUpdate.update(req.body);
             res.status(204).end();
         } catch (error) {
             if (error.name === 'SequelizeValidationError') {
